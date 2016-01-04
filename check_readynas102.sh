@@ -127,7 +127,7 @@ case "$3" in
 	;;
 
 	fan)
-		FAN=`snmpget $1 -v2c -c $2 .1.3.6.1.4.1.4526.22.4.1.3.1 |  awk '{print $4}'`
+		FAN=`snmpget $1 -v2c -c $2 .1.3.6.1.4.1.4526.22.4.1.3.1 |  sed 's/.*ING: "//g' | sed 's/"//g'`
 		
 		if [ $FAN == "ok" ]; then
 		  intReturn=$STATE_OK
