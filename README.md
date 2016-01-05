@@ -2,12 +2,57 @@ Nagios Plugins
 ==============================
 These are added to /usr/local/nagios/libexec on my cut of Nagios.
 
+Huawei S5700 Switches (check_hw_s5700-xx.sh)
+===============================
+Tested working with Huawei S5700-28X and S5700-52X
+
+Command example (for command.cfg)
+------------
+```
+# Huawei S5700 Checks
+define command{
+        command_name    huaweis5700check
+        command_line    $USER1$/check_hw_s5700-xx.sh $HOSTADDRESS$ $ARG1$ $ARG2$
+}
+#
+```
+Service examples
+-------
+```
+define service{
+        use sensor-service
+        hostgroup_name huawei-l2-group
+        service_description Fan 1 Status
+        check_command huaweis5700check!public!fan1
+}
+
+define service{
+        use sensor-service
+        hostgroup_name huawei-l2-group
+        service_description System Temperature
+        check_command huaweis5700check!public!systemp
+}
+
+define service{
+        use sensor-service
+        hostgroup_name huawei-l2-group
+        service_description CPU usage
+        check_command huaweis5700check!public!cpuusage
+}
+
+define service{
+        use sensor-service
+        hostgroup_name huawei-l2-group
+        service_description Memory usage
+        check_command huaweis5700check!public!memusage
+}
+```
 
 ReadyNAS (check_readynas102.sh)
 ===============================
 Tested working with ReadyNAS 102 and 2102 v2
 
-Command (for command.cfg)
+Command example (for command.cfg)
 ------------
 ```
 # ReadyNAS Checks
@@ -17,7 +62,7 @@ define command{
 }
 #
 ```
-Service
+Service examples
 -------
 These are set up for the way I use them so some modification may be needed.
 ```
