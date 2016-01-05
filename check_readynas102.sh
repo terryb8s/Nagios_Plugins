@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# SNMP Nagios Netgear ReadyNAS 102 for Nagios
+# Nagios SNMP Netgear ReadyNAS 102
 #
 # Usage: 
 #  ./check_readynas102 <IP ADDRESS> <SNMP COMMUNITY> <CHECK TYPE>
