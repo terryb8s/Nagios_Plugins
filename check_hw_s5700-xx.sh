@@ -42,9 +42,12 @@ case "$3" in
 		if [ "$FAN1STATUS" = "1" ]; then
 			intReturn=$STATE_OK
 			fan1msg="Normal"
-		else
+		elif [ "FAN1STATUS" = "2" ]; then
 			intReturn=$STATE_WARNING
 			fan1msg="Abnormal"
+		else
+			intReturn=$STATE_UNKNOWN
+			fan1msg="Unknown"
 		fi
 		outMessage="FAN1: $fan1msg"
 	;;
@@ -54,9 +57,12 @@ case "$3" in
 		if [ "$FAN2STATUS" = "1" ]; then
 			intReturn=$STATE_OK
 			fan2msg="Normal"
-		else
+		elif [ "FAN2STATUS" = "2" ]; then
 			intReturn=$STATE_WARNING
-			fan2msg="Abnormal"
+			fan1msg="Abnormal"
+		else
+			intReturn=$STATE_UNKNOWN
+			fan1msg="Unknown"
 		fi
 		outMessage="FAN2: $fan2msg"
 	;;
@@ -66,9 +72,12 @@ case "$3" in
 		if [ "$FAN3STATUS" = "1" ]; then
 			intReturn=$STATE_OK
 			fan3msg="Normal"
-		else
+		elif [ "FAN3STATUS" = "2" ]; then
 			intReturn=$STATE_WARNING
-			fan3msg="Abnormal"
+			fan1msg="Abnormal"
+		else
+			intReturn=$STATE_UNKNOWN
+			fan1msg="Unknown"
 		fi
 		outMessage="FAN3: $fan3msg"
 	;;
@@ -78,8 +87,10 @@ case "$3" in
 		systemp)
 		SYSTEMPVAL=`snmpget $1 -v2c -c $2 .1.3.6.1.4.1.2011.5.25.31.1.1.1.1.11.67108873 | awk '{print $4}'`
 		SYSTEMPTHRESH=`snmpget $1 -v2c -c $2 .1.3.6.1.4.1.2011.5.25.31.1.1.1.1.12.67108873 | awk '{print $4}'`
-		if test "$SYSTEMPVAL" -ge "$SYSTEMPTHRESH"; then
-			intReturn=$STATE_WARNING
+		if test -z "$SYSTEMPVAL"; then # -z is if string is empty
+			intReturn=$STATE_UNKNOWN
+		elif test "$SYSTEMPVAL" -ge "$SYSTEMPTHRESH"; then
+			intReturn=$STATE_CRITICAL
 		else
 			intReturn=$STATE_OK
 		fi
@@ -91,7 +102,9 @@ case "$3" in
 	cpuusage)
 	CPUUSE=`snmpget $1 -v2c -c $2 .1.3.6.1.4.1.2011.5.25.31.1.1.1.1.5.67108873 | awk '{print $4}'`
 	CPUUSETHRESH=`snmpget $1 -v2c -c $2 .1.3.6.1.4.1.2011.5.25.31.1.1.1.1.6.67108873 | awk '{print $4}'`
-		if test "$CPUUSE" -ge "$CPUUSETHRESH"; then
+		if test -z "$CPUUSE"; then # -z is if string is empty
+			intReturn=$STATE_UNKNOWN
+		elif test "$CPUUSE" -ge "$CPUUSETHRESH"; then
 			intReturn=$STATE_WARNING
 		else
 			intReturn=$STATE_OK
@@ -104,7 +117,9 @@ case "$3" in
 	memusage)
 	MEMUSE=`snmpget $1 -v2c -c $2 .1.3.6.1.4.1.2011.5.25.31.1.1.1.1.7.67108873 | awk '{print $4}'`
 	MEMUSETHRESH=`snmpget $1 -v2c -c $2 .1.3.6.1.4.1.2011.5.25.31.1.1.1.1.8.67108873 | awk '{print $4}'`
-		if test "$MEMUSE" -ge "$MEMUSETHRESH"; then
+		if test -z "$MEMUSE"; then # -z is if string is empty
+			intReturn=$STATE_UNKNOWN
+		elif test "$MEMUSE" -ge "$MEMUSETHRESH"; then
 			intReturn=$STATE_WARNING
 		else
 			intReturn=$STATE_OK
